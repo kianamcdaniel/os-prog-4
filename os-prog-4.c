@@ -8,18 +8,20 @@
 #include <stdio.h>
 
 int main(){
-    int pages[30], frames[30], futurePages[30];
+    int pages[30], frames[30], futurePages[30], lru[30];
     char space;
     int i = 0;
     int j = 0;
     int k = 0;
     int numPages = 0;
     int numFrames = 0;
-    int faults = 0;
-    int full, found, pageExists, position, farthest;
+    int faultsOpt = 0;
+    int faultsLru = 0;
+    int full, found, pageExists, positionOpt, positionLru, farthest, least;
+    int recent = 0;
     
     //get reference string
-    printf("Enter a reference string of numbers with maximum length 30\n");
+    printf("\nEnter a reference string of numbers with maximum length 30\n");
     for(i = 0; i < 30; i++){
         if(space != '\n'){
             scanf("%d%c", &pages[i], &space);
@@ -31,12 +33,13 @@ int main(){
     printf("Enter the number of frames\n");
     scanf("%d", &numFrames);
 
+///////////////////////////OPTIMAL ALGORITHM////////////////////////////////////
+    
     //initialize frame array to empty (-1)
     for(i = 0; i < numFrames; i++){
         frames[i] = -1;
     }
     
-    //OPTIMAL ALGORITHM
     printf("\nPage Replacement Process for OPTIMAL ALGORITHM: ");
     for(i = 0; i < numPages; i++){
         full = found = 0;
@@ -54,7 +57,7 @@ int main(){
         if(full == 0){
             for(j = 0; j < numFrames; j++){
                 if(frames[j] == -1){
-                    faults++;
+                    faultsOpt++;
                     frames[j] = pages[i];
                     found = 1;
                     break;
@@ -80,7 +83,7 @@ int main(){
             //if page in frame doesn't exist in the future, save it's positon
             for(j = 0; j < numFrames; j++){
                 if(futurePages[j] == -1){
-                    position = j;
+                    positionOpt = j;
                     pageExists = 0;
                     break;
                 }
@@ -90,18 +93,18 @@ int main(){
             //save it's position
             if(pageExists == 1){
                 farthest = futurePages[0];
-                position = 0;
+                positionOpt = 0;
                 for(j = 1; j < numFrames; j++){
                     if(futurePages[j] > farthest){
                         farthest = futurePages[j];
-                        position = j;
+                        positionOpt = j;
                     }
                 }
             }
             
             //make replacement based on previous logic
-            frames[position] = pages[i];
-            faults++;
+            frames[positionOpt] = pages[i];
+            faultsOpt++;
         }
         
         printf("\n");
@@ -110,7 +113,70 @@ int main(){
         }
     }
     
-    printf("\n\nTotal Page Faults w/ OPTIMAL ALGORITHM: %d\n\n", faults);
+    printf("\n\nTotal Page Faults w/ OPTIMAL ALGORITHM: %d\n\n", faultsOpt);
+    
+//////////////////////////////LRU ALGORITHM/////////////////////////////////////
 
+    //initialize frame array to empty (-1)
+    for(i = 0; i < numFrames; i++){
+        frames[i] = -1;
+    }
+    
+    printf("\nPage Replacement Process for LRU ALGORITHM: ");
+    for(i = 0; i < numPages; i++){
+        full = found = 0;
+        
+        //check if frames are empty
+        //check if page is found
+        //if not, save it's position
+        for(j = 0; j < numFrames; j++){
+            if(frames[j] == pages[i]){
+                recent++;
+                lru[j] = recent;
+                full = found = 1;
+                break;
+            }
+        }
+        
+        //if frame array is empty, fill it
+        //save position
+        if(full == 0){
+            for(j = 0; j < numFrames; j++){
+                if(frames[j] == -1){
+                    faultsLru++;
+                    recent++;
+                    frames[j] = pages[i];
+                    lru[j] = recent++;
+                    found = 1;
+                    break;
+                }
+            }
+        }
+        
+        //if page not found, find the lru frame in frame array and make
+        //replacement based on it
+        if(found == 0){
+            least = lru[0];
+            positionLru = 0;
+            for(j = 0; j < numFrames; j++){
+                if(lru[j] < least){
+                    least = lru[j];
+                    positionLru = j;
+                }
+            }
+            recent++;
+            faultsLru++;
+            frames[positionLru] = pages[i];
+            lru[positionLru] = recent;
+        }
+        
+        printf("\n");
+        for(j = 0; j < numFrames; j++){
+            printf("%d ", frames[j]);
+        }
+    }
+    
+    printf("\n\nTotal Page Faults w/ OPTIMAL ALGORITHM: %d\n\n", faultsLru);
+    
     return 0;
 }
