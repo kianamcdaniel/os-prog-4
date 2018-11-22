@@ -176,7 +176,7 @@ int main(){
         }
     }
     
-    printf("\n\nTotal Page Faults w/ OPTIMAL ALGORITHM: %d\n\n", faultsLru);
+    printf("\n\nTotal Page Faults w/ LRU ALGORITHM: %d\n\n", faultsLru);
     
     return 0;
 }
