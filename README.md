@@ -10,14 +10,14 @@ please follow the steps below to run my **os-prog-4.c** program
   - this will run os-prog-4
   
 5) you will be prompted as shown below: 
-    **Enter a reference string of numbers with maximum length 30:**
-    **0 1 5 2 3 5**
+   - **Enter a reference string of numbers with maximum length 30:**
+   - **0 1 5 2 3 5**
     
   - please enter input in the same format as shown above 
   
 6) you will be prompted again as shown below: 
-    **Enter the number of frames:**
-    **2**
+   - **Enter the number of frames:**
+   - **2**
   - please enter input in the same format as shown above
 
 7) the program will output the page replacement process for the 
